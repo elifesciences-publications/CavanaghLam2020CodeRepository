@@ -1,0 +1,67 @@
+clearvars; close all;
+%% Path locations of the matlab codes and data files (Please edit)
+% MainDirectory = '/Users/seancavanagh/Downloads/CavanaghLam2020Repository';
+MainDirectory = 'C:/Users/nhl8/Desktop/Murray Lab/Bar Task/CavanaghLam2020Repository';
+%% Run the analyses
+addpath(fullfile(MainDirectory,'CodeFiles'))
+
+%%% First set if lapse_rate is to be incoporated downstream of choice data.
+flag_lapse_downstream = 1;      % 0 by default. Set to 1 (and set lapse_rate_def) if lapse is to be incoporated downstream of choice data.
+lapse_rate_def = 0.0684;             % 0 by default. Fitted lapse_rate =0.118 for monkey A, =0.0684 for monkey H.
+
+
+%%% Run default spiking circuit models (main figures). For Figures 5&7.
+model_folder = 'Default_Models';
+
+model_condition = 'Control';
+[PythonVars_model_control] = StandardSessions_model(model_condition, MainDirectory, model_folder, flag_lapse_downstream,lapse_rate_def); 
+
+model_condition = 'Lowered_EI';
+[PythonVars_model_lowered_EI] = StandardSessions_model(model_condition, MainDirectory, model_folder, flag_lapse_downstream,lapse_rate_def); 
+
+model_condition = 'Elevated_EI';
+[PythonVars_model_elevated_EI] = StandardSessions_model(model_condition, MainDirectory, model_folder, flag_lapse_downstream,lapse_rate_def); 
+
+model_condition = 'Sensory_deficit';
+[PythonVars_model_sensory_deficit] = StandardSessions_model(model_condition, MainDirectory, model_folder, flag_lapse_downstream,lapse_rate_def); 
+
+%%% Run control mean-field models (main figures). For Figure 6.
+model_condition = 'Control_MF';
+[PythonVars_model_control_MF] = StandardSessions_model(model_condition, MainDirectory, model_folder, flag_lapse_downstream,lapse_rate_def); 
+
+
+
+%%% For fig 5S2: more vs less net total evidence.
+model_folder = 'Fig5S2';
+model_condition = 'Control_upper_half_total_evi';
+[PythonVars_model_control_more_total_evi_MF] = StandardSessions_model(model_condition, MainDirectory, model_folder, flag_lapse_downstream,lapse_rate_def); 
+
+model_condition = 'Control_lower_half_total_evi';
+[PythonVars_model_control_less_total_evi_MF] = StandardSessions_model(model_condition, MainDirectory, model_folder, flag_lapse_downstream,lapse_rate_def); 
+
+%%% Parameterized Sensory deficit
+model_folder = 'Parameterized_sensory_deficit';
+sensory_coeff_precent = 80;             % Specify what percent of sensory deficit to use. 100 <=> control, 80 <=> inputs are only 80% as strong as control, etc.
+model_condition = sprintf('Sensory_deficit_sens_coeff=0.%d', sensory_coeff_precent);
+[PythonVars_model_parameterized_sensory_deficit] = StandardSessions_model(model_condition, MainDirectory, model_folder, flag_lapse_downstream,lapse_rate_def); 
+
+%%% Parameterized E/I perturbation (gNMDA_E->E/I)
+model_folder = 'Parameterized_EI_pert';
+gNMDA_i_pert_rel = 0.;% Specify what percent of gNMDA_I (NMDA conductance to I-cells) to use. 0 <=> no perturbation.
+gNMDA_e_pert_rel = 0.5;% Specify what percent of gNMDA_I (NMDA conductance to I-cells) to use. 0 <=> no perturbation.
+model_condition = sprintf('EI_pert_gNMDAI_pert_rel=%.2f_gNMDAE_pert_rel=%.2f', gNMDA_i_pert_rel, gNMDA_e_pert_rel);
+[PythonVars_model_parameterized_EI_pert] = StandardSessions_model(model_condition, MainDirectory, model_folder, flag_lapse_downstream,lapse_rate_def); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
